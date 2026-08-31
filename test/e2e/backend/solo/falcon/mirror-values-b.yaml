@@ -1,0 +1,12 @@
+# Mirror Helm overrides for CLPR e2e chain B (execution chain id 1338).
+web3:
+  env:
+    HIERO_MIRROR_WEB3_EVM_NETWORK: "OTHER"
+  config:
+    hiero:
+      mirror:
+        web3:
+          evm:
+            network: OTHER
+            properties:
+              contracts.chainId: "1338"

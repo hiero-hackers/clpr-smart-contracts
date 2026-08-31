@@ -1,0 +1,12 @@
+# Mirror Helm overrides (execution chain id substituted per side).
+web3:
+  env:
+    HIERO_MIRROR_WEB3_EVM_NETWORK: "OTHER"
+  config:
+    hiero:
+      mirror:
+        web3:
+          evm:
+            network: OTHER
+            properties:
+              contracts.chainId: "{{CHAIN_ID}}"

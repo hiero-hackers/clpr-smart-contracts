@@ -1,0 +1,62 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc = "0.8.30"
+optimizer = true
+optimizer_runs = 2000
+via_ir = true
+ffi = false
+# Ignored warning codes (solc false positives only):
+# 5740: Unreachable code (solc false positive in modifier chains)
+# 2394: Transient storage warning (safe for ReentrancyGuardTransient reentrancy guards)
+ignored_error_codes = [5740, 2394]
+# Target Osaka — the EVM half of the Fusaka hardfork. ClprService's constructor
+# previously inlined initcode for 5 child contracts and exceeded EIP-3860's
+# 49152-byte cap; AdminLogic was pulled out and is passed in via the constructor
+# (see ClprService.sol), shrinking the router's initcode to ~44KB with comfortable
+# headroom. solc 0.8.30 supports "osaka" as an experimental target; bytecode is
+# accepted by Besu 26.5+ when the genesis activates Shanghai/Cancun/Prague/Osaka
+# at time 0 (see test/e2e/backend/genesis-*.json).
+evm_version = "osaka"
+# Strip CBOR metadata + IPFS hash. Saves ~52 bytes per contract — small but
+# essentially free, and the saving compounds across the still-inlined children.
+bytecode_hash = "none"
+cbor_metadata = false
+fs_permissions = [
+    { access = "read", path = "./storage-layout.json" },
+    { access = "read", path = "test/verifiers/hiero/fixtures" },
+    { access = "read", path = "test/verifiers/evm/qbft/fixtures" },
+    { access = "read", path = "src/verifiers" },
+    { access = "read", path = "test/verifiers" },
+]
+[profile.default.fuzz]
+runs = 256
+
+[profile.test]
+# Test profile: ignore bytecode size warnings (test contracts don't deploy to mainnet)
+# 3860: Initcode size limit (EIP-3860)
+# 5574: Runtime code size limit (Spurious Dragon)
+ignored_error_codes = [5740, 2394, 3860, 5574]
+
+# See test/invariants/README.md for rationale (ClprInvariantTest).
+[invariant]
+runs = 256
+depth = 100
+fail_on_revert = false
+max_time_delay = 10
+max_block_delay = 10
+shrink_run_limit = 5000
+
+[rpc_endpoints]
+anvil = "http://127.0.0.1:8545"
+besu = "${BESU_RPC}"
+hiero = "${HIERO_RPC}"
+
+[lint]
+ignore = ["test/"]
+
+[fmt]
+line_length = 120
+tab_width = 4
+bracket_spacing = false

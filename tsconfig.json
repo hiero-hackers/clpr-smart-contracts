@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "lib": ["ES2022"],
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": false,
+    "noImplicitAny": true,
+    "types": ["node", "vitest/globals"]
+  },
+  "include": [
+    "script/deploy/**/*.ts",
+    "script/gas/**/*.ts",
+    "test/e2e/**/*.ts",
+    "test/verification-inputs/**/*.ts",
+    "vitest.config.ts"
+  ]
+}

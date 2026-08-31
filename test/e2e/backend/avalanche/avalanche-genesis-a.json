@@ -1,0 +1,42 @@
+{
+  "networkID": 1337,
+  "cChainGenesis": {
+    "config": {
+      "chainId": 1337,
+      "homesteadBlock": 0,
+      "eip150Block": 0,
+      "eip155Block": 0,
+      "eip158Block": 0,
+      "byzantiumBlock": 0,
+      "constantinopleBlock": 0,
+      "petersburgBlock": 0,
+      "istanbulBlock": 0,
+      "muirGlacierBlock": 0,
+      "berlinBlock": 0,
+      "londonBlock": 0,
+      "cancunBlock": 0,
+      "pragueBlock": 0,
+      "subnetEVMTimestamp": 0,
+      "feeConfig": {
+        "gasLimit": 8000000,
+        "minBaseFee": 25000000000,
+        "targetGas": 15000000,
+        "baseFeeChangeDenominator": 36,
+        "minBlockGasCost": 0,
+        "maxBlockGasCost": 1000000,
+        "targetBlockRate": 2
+      }
+    },
+    "alloc": {},
+    "nonce": "0x0",
+    "timestamp": "0x0",
+    "extraData": "0x",
+    "gasLimit": "0x7c00000",
+    "difficulty": "0x0",
+    "mixHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
+    "coinbase": "0x0000000000000000000000000000000000000000",
+    "number": "0x0",
+    "gasUsed": "0x0",
+    "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  }
+}

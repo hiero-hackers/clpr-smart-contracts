@@ -1,0 +1,114 @@
+services:
+  besu-node0:
+    image: hyperledger/besu:24.10.0
+    container_name: qbft-node0
+    ports:
+      - "18545:8545"
+    volumes:
+      - ./genesis.json:/opt/besu/genesis.json:ro
+      - ./node-key-0:/tmp/node-key:ro
+    networks:
+      qbft-net:
+        ipv4_address: 172.28.0.10
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        cp /tmp/node-key /opt/besu/data/key
+        chmod 600 /opt/besu/data/key
+        exec /opt/besu/bin/besu \
+          --data-path=/opt/besu/data \
+          --genesis-file=/opt/besu/genesis.json \
+          --node-private-key-file=/opt/besu/data/key \
+          --network-id=1337 \
+          --min-gas-price=0 \
+          --rpc-http-enabled \
+          --rpc-http-host=0.0.0.0 \
+          --rpc-http-port=8545 \
+          --rpc-http-cors-origins=all \
+          --rpc-http-api=ETH,NET,WEB3,QBFT,ADMIN,DEBUG,TRACE,TXPOOL,MINER \
+          --host-allowlist=* \
+          --p2p-host=172.28.0.10 \
+          --p2p-port=30303 \
+          --logging=INFO
+    tmpfs:
+      - /opt/besu/data
+
+  besu-node1:
+    image: hyperledger/besu:24.10.0
+    container_name: qbft-node1
+    volumes:
+      - ./genesis.json:/opt/besu/genesis.json:ro
+      - ./node-key-1:/tmp/node-key:ro
+    networks:
+      qbft-net:
+        ipv4_address: 172.28.0.11
+    depends_on:
+      - besu-node0
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        cp /tmp/node-key /opt/besu/data/key
+        chmod 600 /opt/besu/data/key
+        exec /opt/besu/bin/besu \
+          --data-path=/opt/besu/data \
+          --genesis-file=/opt/besu/genesis.json \
+          --node-private-key-file=/opt/besu/data/key \
+          --network-id=1337 \
+          --min-gas-price=0 \
+          --rpc-http-enabled \
+          --rpc-http-host=0.0.0.0 \
+          --rpc-http-port=8545 \
+          --rpc-http-cors-origins=all \
+          --rpc-http-api=ETH,NET,WEB3,QBFT,ADMIN,DEBUG,TRACE,TXPOOL,MINER \
+          --host-allowlist=* \
+          --p2p-host=172.28.0.11 \
+          --p2p-port=30303 \
+          --bootnodes=enode://8318535b54105d4a7aae60c08fc45f9687181b4fdfc625bd1a753fa7397fed753547f11ca8696646f2f3acb08e31016afac23e630c5d11f59f61fef57b0d2aa5@172.28.0.10:30303 \
+          --logging=INFO
+    tmpfs:
+      - /opt/besu/data
+
+  besu-node2:
+    image: hyperledger/besu:24.10.0
+    container_name: qbft-node2
+    volumes:
+      - ./genesis.json:/opt/besu/genesis.json:ro
+      - ./node-key-2:/tmp/node-key:ro
+    networks:
+      qbft-net:
+        ipv4_address: 172.28.0.12
+    depends_on:
+      - besu-node0
+    entrypoint: /bin/sh
+    command:
+      - -c
+      - |
+        cp /tmp/node-key /opt/besu/data/key
+        chmod 600 /opt/besu/data/key
+        exec /opt/besu/bin/besu \
+          --data-path=/opt/besu/data \
+          --genesis-file=/opt/besu/genesis.json \
+          --node-private-key-file=/opt/besu/data/key \
+          --network-id=1337 \
+          --min-gas-price=0 \
+          --rpc-http-enabled \
+          --rpc-http-host=0.0.0.0 \
+          --rpc-http-port=8545 \
+          --rpc-http-cors-origins=all \
+          --rpc-http-api=ETH,NET,WEB3,QBFT,ADMIN,DEBUG,TRACE,TXPOOL,MINER \
+          --host-allowlist=* \
+          --p2p-host=172.28.0.12 \
+          --p2p-port=30303 \
+          --bootnodes=enode://8318535b54105d4a7aae60c08fc45f9687181b4fdfc625bd1a753fa7397fed753547f11ca8696646f2f3acb08e31016afac23e630c5d11f59f61fef57b0d2aa5@172.28.0.10:30303 \
+          --logging=INFO
+    tmpfs:
+      - /opt/besu/data
+
+networks:
+  qbft-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/24

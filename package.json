@@ -1,0 +1,66 @@
+{
+  "name": "clpr-smart-contracts",
+  "private": true,
+  "type": "module",
+  "description": "CLPR EVM smart contracts (Foundry) + end-to-end test harness (vitest).",
+  "scripts": {
+    "build:contracts": "forge build",
+    "deploy": "tsx script/deploy/cli.ts",
+    "deploy:e2e-with-qbft-verifier": "tsx script/deploy/cli.ts e2e-with-qbft-verifier",
+    "deploy:e2e-with-hiero-verifier": "tsx script/deploy/cli.ts e2e-with-hiero-verifier",
+    "test:e2e": "CLPR_BACKEND=anvil vitest run",
+    "test:e2e:anvil": "CLPR_BACKEND=anvil vitest run",
+    "test:e2e:besu": "CLPR_BACKEND=besu vitest run",
+    "test:e2e:solo": "CLPR_BACKEND=solo vitest run --config vitest.solo.config.ts",
+    "test:e2e:qbft-verifier": "vitest run test/e2e/tests/verifiers/qbft-verifier.spec.ts",
+    "test:e2e:eth-verifier": "CLPR_BACKEND=anvil vitest run test/e2e/tests/verifiers/eth-verifier.spec.ts",
+    "test:e2e:sei-verifier": "CLPR_BACKEND=sei vitest run test/e2e/tests/verifiers/sei-verifier.spec.ts",
+    "test:e2e:all": "npm run test:e2e:anvil && npm run test:e2e:besu",
+    "test:e2e:avalanche": "CLPR_BACKEND=avalanche vitest run",
+    "test:e2e:anvil:avalanche": "CLPR_BACKEND=anvil:avalanche vitest run",
+    "test:e2e:besu:solo": "CLPR_BACKEND=besu:solo vitest run --config vitest.solo.config.ts test/e2e/tests/besu-solo-roundtrip.spec.ts",
+    "test:e2e:solo:besu": "CLPR_BACKEND=solo:besu vitest run --config vitest.solo.config.ts test/e2e/tests/besu-solo-roundtrip.spec.ts",
+    "gas:check": "tsx script/gas/check-gas-regression.ts",
+    "gas:check:update": "tsx script/gas/check-gas-regression.ts -- --update-baselines",
+    "e2e:up:avalanche": "node --experimental-strip-types test/e2e/backend/infra.ts up avalanche",
+    "e2e:down:avalanche": "node --experimental-strip-types test/e2e/backend/infra.ts down avalanche",
+    "e2e:avalanche:status": "node --experimental-strip-types test/e2e/backend/infra.ts status avalanche",
+    "e2e:solo:up": "node --experimental-strip-types test/e2e/backend/solo/cli.ts up",
+    "e2e:solo:down": "node --experimental-strip-types test/e2e/backend/solo/cli.ts down",
+    "e2e:solo:status": "node --experimental-strip-types test/e2e/backend/solo/cli.ts status",
+    "e2e:solo:diagnostics": "node --experimental-strip-types test/e2e/backend/solo/diagnostics.ts",
+    "test:e2e:watch": "CLPR_BACKEND=anvil vitest",
+    "e2e:up": "node --experimental-strip-types test/e2e/backend/infra.ts up",
+    "e2e:up:besu": "node --experimental-strip-types test/e2e/backend/infra.ts up besu",
+    "e2e:up:solo": "node --experimental-strip-types test/e2e/backend/infra.ts up solo",
+    "e2e:up:besu:solo": "node --experimental-strip-types test/e2e/backend/infra.ts up besu:solo",
+    "e2e:up:solo:besu": "node --experimental-strip-types test/e2e/backend/infra.ts up solo:besu",
+    "e2e:down": "node --experimental-strip-types test/e2e/backend/infra.ts down",
+    "e2e:down:besu": "node --experimental-strip-types test/e2e/backend/infra.ts down besu",
+    "e2e:down:solo": "node --experimental-strip-types test/e2e/backend/infra.ts down solo",
+    "e2e:down:besu:solo": "node --experimental-strip-types test/e2e/backend/infra.ts down besu:solo",
+    "e2e:down:solo:besu": "node --experimental-strip-types test/e2e/backend/infra.ts down solo:besu",
+    "e2e:besu:status": "node --experimental-strip-types test/e2e/backend/infra.ts status besu",
+    "verify:establish-channel": "tsx test/verification-inputs/establish-channel.ts",
+    "verify:proof": "tsx test/verification-inputs/proof-verification.ts"
+  },
+  "dependencies": {
+    "@ethereumjs/rlp": "^10.1.2",
+    "dotenv": "17.4.2",
+    "testcontainers": "^12.0.1",
+    "viem": "2.51.3"
+  },
+  "devDependencies": {
+    "@hiero-ledger/solo": "0.84.1",
+    "@types/node": "^22.7.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^4.1.6"
+  },
+  "engines": {
+    "node": ">=24"
+  },
+  "overrides": {
+    "bare-events": "2.8.2"
+  }
+}

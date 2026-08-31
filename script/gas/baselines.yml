@@ -1,0 +1,61 @@
+# Gas regression baselines (forge-based).
+#
+# Run:  npm run gas:check          (CI gate - fails if any metric increased)
+#       npm run gas:check:update   (re-baseline to current measured values)
+#
+# A metric FAILS when  measured > baseline * (1 + tolerance_pct/100).
+# Baselines are UPPER BOUNDS: optimizations that lower gas always pass; only
+# increases fail. When a change is expected to move gas, re-baseline and review
+# the diff to this file.
+tolerance_pct: 0
+
+# Metrics printed via console.log ("Label: <gas>") inside a forge test.
+log_benchmarks:
+  - name: Hiero verifier breakdown
+    match_path: test/verifiers/hiero/GasUsage.t.sol
+    metrics:
+      # console.log label -> max allowed gas
+      "Protobuf decode": 177231
+      "Merkle path 1": 1407156
+      "Merkle path 2": 1194688
+      "hinTS BLS12-381": 902642
+      "WRAPS Groth16+KZG": 2456774
+      "TOTAL": 6138491
+
+  - name: Ethereum mainnet verifier (BLS / SSZ hot paths)
+    match_path: test/verifiers/evm/ethereum/GasUsage.t.sol
+    metrics:
+      "hashToG2": 113934
+      "BLS aggregateVerifyComplement 342 (170 nonP)": 1348432
+      "BLS aggregateVerifyComplement 512 (0 nonP)": 218662
+      "SSZ syncCommitteeRootFromUncompressed 512": 1187812
+
+# End-to-end function gas from `forge test --gas-report`, keyed by contract +
+# function + column (contract-aware: ClprService.submitBundle is distinct from
+# BundleLogic.submitBundle). column ∈ {min, avg, median, max, calls}.
+#
+# We track the `min` column for submitBundle and each verifier's verifyBundle.
+# Each is exercised by a success-only test that calls the function EXACTLY once on
+# the happy path, so min == the real success-path cost. (The full HieroVerifier /
+# QBFTVerifier suites also call verifyBundle on cheap early-revert paths, which is
+# why those metrics point at the dedicated VerifyBundleGas.t.sol files instead.)
+gas_report_benchmarks:
+  # TODO: test skipped until the real state-proof fixture regeneration work is done.
+  #  - name: ClprService.submitBundle (Hiero, real state proof)
+  #    match_path: test/logic/bundle-logic/HieroSubmitBundle.t.sol
+  #    contract: ClprService
+  #    function: submitBundle
+  #    column: min
+  #    baseline: 6439188
+  - name: HieroVerifier.verifyBundle (success-only path)
+    match_path: test/verifiers/hiero/GasUsage.t.sol
+    contract: HieroVerifier
+    function: verifyBundle
+    column: min
+    baseline: 6108407
+  - name: QBFTVerifier.verifyBundle (success-only path)
+    match_path: test/verifiers/evm/qbft/GasUsage.t.sol
+    contract: QBFTVerifier
+    function: verifyBundle
+    column: min
+    baseline: 294393

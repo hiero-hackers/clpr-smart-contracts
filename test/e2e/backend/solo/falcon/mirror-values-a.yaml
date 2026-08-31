@@ -1,0 +1,14 @@
+# Mirror Helm overrides for CLPR e2e chain A (execution chain id 1337).
+# mirrorNode.--values-file in falcon-a.yaml → web3.config is rendered as /usr/etc/hiero/application.yaml.
+# eth_call / block.chainid use mirror-web3 EVM (defaults to 298 for TESTNET/OTHER unless properties override).
+web3:
+  env:
+    HIERO_MIRROR_WEB3_EVM_NETWORK: "OTHER"
+  config:
+    hiero:
+      mirror:
+        web3:
+          evm:
+            network: OTHER
+            properties:
+              contracts.chainId: "1337"

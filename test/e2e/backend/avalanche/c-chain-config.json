@@ -1,0 +1,8 @@
+{
+  "snowman-api-enabled": false,
+  "coreth-admin-api-enabled": false,
+  "eth-apis": ["eth", "net", "web3"],
+  "ws-api-enabled": false,
+  "local-txs-enabled": true,
+  "allow-unfinalized-queries": true
+}

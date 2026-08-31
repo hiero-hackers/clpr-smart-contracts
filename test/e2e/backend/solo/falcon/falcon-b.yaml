@@ -1,0 +1,29 @@
+# Falcon one-shot values for CLPR e2e chain B (eth_chainId + block.chainid = 1338).
+# Multinode TSS: 3 consensus nodes by default (override with CLPR_SOLO_CONSENSUS_NODES).
+network:
+  --consensus-node-version: "v0.74.0"
+  --chain-id: "1338"
+  --pvcs: false
+  --application-properties: "test/e2e/backend/solo/falcon/network-application-tss.properties"
+  --tss: true
+
+setup:
+  --consensus-node-version: "v0.74.0"
+
+consensusNode:
+  --force-port-forward: false
+  --stake-amounts: "500,500,500"
+
+blockNode:
+  --force-port-forward: false
+  --enable-ingress: false
+
+mirrorNode:
+  --force-port-forward: false
+  --pinger: true
+  --values-file: "test/e2e/backend/solo/falcon/mirror-values-b.yaml"
+
+relayNode:
+  --chain-id: "1338"
+  --node-aliases: "node1"
+  --force-port-forward: false

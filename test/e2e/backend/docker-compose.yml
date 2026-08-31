@@ -1,0 +1,102 @@
+services:
+  besu-a:
+    image: hyperledger/besu:26.5.0
+    command:
+      - --genesis-file=/config/genesis-a.json
+      - --network-id=1337
+      - --data-path=/data
+      - --data-storage-format=FOREST
+      - --node-private-key-file=/config/besu-key
+      - --rpc-http-enabled
+      - --rpc-http-host=0.0.0.0
+      - --rpc-http-port=8545
+      - --rpc-http-cors-origins=all
+      - --rpc-http-api=ETH,NET,WEB3,DEBUG,TXPOOL,MINER
+      - --rpc-gas-cap=0
+      - --host-allowlist=*
+      # Besu 26+ removed --miner-enabled / --miner-coinbase. Mining is auto-on for
+      # PoA networks when the node's key (loaded from --node-private-key-file) is
+      # a configured Clique signer in the genesis extraData.
+      - --min-gas-price=0
+      - --logging=WARN
+    volumes:
+      - ./besu/genesis-a.json:/config/genesis-a.json:ro
+      - ./besu/besu-key:/config/besu-key:ro
+    # tmpfs gives Besu a writable /data without touching the host filesystem;
+    # the chain state is ephemeral, which matches our throwaway-test semantics.
+    # The node key lives at /config/besu-key (bind-mounted, read-only).
+    tmpfs:
+      - /data
+    ports:
+      # Fixed host port so `npm run e2e:up:besu` exposes a deterministic URL that
+      # BesuDriver can reuse without re-launching containers via Testcontainers.
+      - "18545:8545"
+    # No compose healthcheck — the Besu image doesn't ship curl/wget. Readiness
+    # is verified from the host side by BesuDriver via testcontainers' HTTP wait.
+
+  besu-b:
+    image: hyperledger/besu:26.5.0
+    command:
+      - --genesis-file=/config/genesis-b.json
+      - --network-id=1338
+      - --data-path=/data
+      - --data-storage-format=FOREST
+      - --node-private-key-file=/config/besu-key
+      - --rpc-http-enabled
+      - --rpc-http-host=0.0.0.0
+      - --rpc-http-port=8545
+      - --rpc-http-cors-origins=all
+      - --rpc-http-api=ETH,NET,WEB3,DEBUG,TXPOOL,MINER
+      - --host-allowlist=*
+      # Besu 26+ removed --miner-enabled / --miner-coinbase. Mining is auto-on for
+      # PoA networks when the node's key (loaded from --node-private-key-file) is
+      # a configured Clique signer in the genesis extraData.
+      - --min-gas-price=0
+      - --logging=WARN
+    volumes:
+      - ./besu/genesis-b.json:/config/genesis-b.json:ro
+      - ./besu/besu-key:/config/besu-key:ro
+    tmpfs:
+      - /data
+    ports:
+      - "18546:8545"
+
+  avalanche-a:
+    image: avaplatform/avalanchego:v1.14.2
+    command:
+      - /avalanchego/build/avalanchego
+      - --network-id=local
+      - --http-host=0.0.0.0
+      - --http-port=9650
+      - --http-allowed-origins=*
+      - --bootstrap-ips=
+      - --bootstrap-ids=
+      - --sybil-protection-enabled=false
+    volumes:
+      - ./avalanche/c-chain-config.json:/root/.avalanchego/configs/chains/C.json:ro
+      - ./avalanche/avalanche-genesis-a.json:/root/.avalanchego/configs/chains/C/genesis.json:ro
+    tmpfs:
+      - /root/.avalanchego/db
+      - /root/.avalanchego/logs
+    ports:
+      - "19650:9650"
+
+  avalanche-b:
+    image: avaplatform/avalanchego:v1.14.2
+    command:
+      - /avalanchego/build/avalanchego
+      - --network-id=local
+      - --http-host=0.0.0.0
+      - --http-port=9650
+      - --http-allowed-origins=*
+      - --bootstrap-ips=
+      - --bootstrap-ids=
+      - --sybil-protection-enabled=false
+    volumes:
+      - ./avalanche/c-chain-config.json:/root/.avalanchego/configs/chains/C.json:ro
+      - ./avalanche/avalanche-genesis-b.json:/root/.avalanchego/configs/chains/C/genesis.json:ro
+    tmpfs:
+      - /root/.avalanchego/db
+      - /root/.avalanchego/logs
+    ports:
+      - "19651:9650"
