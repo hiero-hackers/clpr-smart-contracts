@@ -159,7 +159,7 @@ contract HieroSubmitBundleTest is ClprTestBase {
     /// @notice Full pipeline: real HieroVerifier verifies the stateProof.bin fixture
     ///         and the channel state is updated correctly.
     ///
-    /// @dev The stateProof.bin fixture was regenerated from a live clpr-e2e localnet
+    /// @dev The stateProof.bin fixture was regenerated from a live end to end localnet
     ///      round trip after the running-hash fold changed to `sha256(prev || sha256(payload))`.
     ///      Its proven `sentRunningHash` (0x81144f98…) is therefore the new-formula value, so
     ///      `BundleLib`'s inbound re-fold matches and submitBundle succeeds. The proof's crypto
