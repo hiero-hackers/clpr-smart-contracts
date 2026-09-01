@@ -18,7 +18,7 @@ export interface ProvisionedSuite {
 
 /// Deterministic private key per Vitest suite so runs are isolated but reproducible.
 export function suitePrivateKey(suiteId: string): `0x${string}` {
-    return keccak256(toBytes(`clpr-e2e-suite:v1:${suiteId}`));
+    return keccak256(toBytes(`testing-suite:v1:${suiteId}`));
 }
 
 /// Create a suite-only account, fund it on A and B, and return chain clients.
