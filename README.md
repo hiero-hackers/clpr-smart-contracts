@@ -1,5 +1,6 @@
 # CLPR Smart Contracts
 
+
 Solidity contracts for the CLPR protocol, built with [Foundry](https://book.getfoundry.sh/).
 
 ## Quick Start
